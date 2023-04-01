@@ -3,7 +3,7 @@ import { SWRConfig } from 'swr';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { lightTheme } from '../../themes';
 import '@/styles/globals.css';
-import { CartProvider, UiProvider } from '../../contexts';
+import { AuthProvider, CartProvider, UiProvider } from '../../contexts';
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
@@ -11,14 +11,16 @@ export default function App({ Component, pageProps }: AppProps) {
 			value={{
 				fetcher: (resource, init) => fetch(resource, init).then(res => res.json()),
 			}}>
-			<CartProvider>
-				<UiProvider>
-					<ThemeProvider theme={lightTheme}>
-						<CssBaseline />
-						<Component {...pageProps} />
-					</ThemeProvider>
-				</UiProvider>
-			</CartProvider>
+			<AuthProvider>
+				<CartProvider>
+					<UiProvider>
+						<ThemeProvider theme={lightTheme}>
+							<CssBaseline />
+							<Component {...pageProps} />
+						</ThemeProvider>
+					</UiProvider>
+				</CartProvider>
+			</AuthProvider>
 		</SWRConfig>
 	);
 }
