@@ -33,7 +33,9 @@ const RegisterPage = () => {
 			setTimeout(() => setShowError(false), 3000);
 			return;
 		}
-		router.replace('/');
+		//? Navegar a la pantalla donde el usuario estaba.
+		const destination = router.query.p?.toString() || '/';
+		router.replace(destination);
 	};
 	return (
 		<AuthLayout title='Registrar'>
@@ -100,7 +102,7 @@ const RegisterPage = () => {
 							</Button>
 						</Grid>
 						<Grid item xs={12} display='flex' justifyContent='end'>
-							<NextLink href='/auth/login' passHref legacyBehavior>
+							<NextLink href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'} passHref legacyBehavior>
 								<Link underline='always'>Ya tienes una cuenta ?</Link>
 							</NextLink>
 						</Grid>
