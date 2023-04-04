@@ -5,6 +5,7 @@ import { Box, Button, FormControl, Grid, MenuItem, TextField, Typography } from 
 import { countries } from '../../../utils';
 import { ShopLayout } from '../../../components/layouts';
 import { useCartContext } from '../../../hooks';
+import { useEffect } from 'react';
 
 type FormData = {
 	firstName: string;
@@ -35,9 +36,23 @@ const AddressPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<FormData>({
-		defaultValues: getAddressFromCookies(),
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			address: '',
+			address2: '',
+			zip: '',
+			city: '',
+			phone: '',
+			country: countries[0].code,
+		},
 	});
+	useEffect(() => {
+		reset(getAddressFromCookies());
+	}, [reset]);
+
 	const onSubmitAddress = (data: FormData) => {
 		updateAddress(data);
 		router.push('/checkout/summary');
@@ -115,20 +130,17 @@ const AddressPage = () => {
 					<Grid item xs={12} sm={6}>
 						<FormControl fullWidth>
 							<TextField
-								select
+								// select
 								variant='filled'
 								label='País'
-								defaultValue={Cookies.get('country') || countries[0].code}
+								fullWidth
+								// defaultValue={ Cookies.get('country') || countries[0].code }
 								{...register('country', {
-									required: 'Este campo es requerido.',
+									required: 'Este campo es requerido',
 								})}
-								error={!!errors.country}>
-								{countries.map(country => (
-									<MenuItem key={country.code} value={country.code}>
-										{country.name}
-									</MenuItem>
-								))}
-							</TextField>
+								error={!!errors.country}
+								helperText={errors.country?.message}
+							/>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12} sm={6}>

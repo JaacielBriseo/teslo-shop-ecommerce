@@ -1,5 +1,6 @@
 import { PropsWithChildren, useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
+import { useSession , signOut } from 'next-auth/react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { tesloApi } from '../../api';
@@ -18,22 +19,30 @@ const AUTH_INITIAL_STATE: AuthState = {
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 	const router = useRouter();
+	const { data, status } = useSession();
 
 	useEffect(() => {
-		checkToken();
-	}, []);
-
-	const checkToken = async () => {
-		if (!Cookies.get('token')) return;
-		try {
-			const { data } = await tesloApi.get('/user/validate-token');
-			const { token, user } = data;
-			Cookies.set('token', token);
-			dispatch({ type: '[Auth] - Login', payload: user });
-		} catch (error) {
-			Cookies.remove('token');
+		if (status === 'authenticated') {
+			dispatch({type:'[Auth] - Login',payload:data.user as IUser})
+			console.log({ user: data.user });
 		}
-	};
+	}, [data, status]);
+
+	// useEffect(() => {
+	// 	checkToken();
+	// }, []);
+
+	// const checkToken = async () => {
+	// 	if (!Cookies.get('token')) return;
+	// 	try {
+	// 		const { data } = await tesloApi.get('/user/validate-token');
+	// 		const { token, user } = data;
+	// 		Cookies.set('token', token);
+	// 		dispatch({ type: '[Auth] - Login', payload: user });
+	// 	} catch (error) {
+	// 		Cookies.remove('token');
+	// 	}
+	// };
 
 	const loginUser = async (email: string, password: string): Promise<boolean> => {
 		try {
@@ -48,9 +57,18 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	const logout = () => {
-		Cookies.remove('token');
 		Cookies.remove('cart');
-		router.reload();
+		Cookies.remove('firstName');
+		Cookies.remove('lastName');
+		Cookies.remove('address');
+		Cookies.remove('address2');
+		Cookies.remove('zip');
+		Cookies.remove('city');
+		Cookies.remove('country');
+		Cookies.remove('phone');
+		signOut()
+		// router.reload();
+		// Cookies.remove('token');
 	};
 
 	const registerUser = async (

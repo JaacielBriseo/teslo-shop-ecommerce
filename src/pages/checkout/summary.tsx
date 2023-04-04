@@ -3,14 +3,17 @@ import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from 
 import { useCartContext } from '../../../hooks';
 import { ShopLayout } from '../../../components/layouts';
 import { CartList, OrderSummary } from '../../../components/cart';
-import { useMemo } from 'react';
-import { countries } from '../../../utils';
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 const SummaryPage = () => {
+	const router = useRouter();
 	const { shippingAddress, numberOfItems } = useCartContext();
-	const countryName = useMemo(
-		() => countries.find(country => country.code === shippingAddress?.country)?.name,
-		[shippingAddress?.country]
-	);
+	useEffect(() => {
+		if (!Cookies.get('firstName')) {
+			router.push('/checkout/address');
+		}
+	}, [router]);
 	if (!shippingAddress) {
 		return <></>;
 	}
@@ -43,7 +46,7 @@ const SummaryPage = () => {
 							<Typography>
 								{shippingAddress?.city}, {shippingAddress.zip}
 							</Typography>
-							<Typography>{countryName}</Typography>
+							<Typography>{shippingAddress.country}</Typography>
 							<Typography>{shippingAddress?.phone}</Typography>
 							<Divider sx={{ my: 1 }} />
 							<Box display='flex' justifyContent='end'>

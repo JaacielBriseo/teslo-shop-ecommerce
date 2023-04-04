@@ -1,13 +1,14 @@
-import NextLink from 'next/link';
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { AuthLayout } from '../../../components/layouts';
-import { useForm } from 'react-hook-form';
-import { tesloApi } from '../../../api';
-import { validations } from '../../../utils';
 import { useState } from 'react';
-import { ErrorOutline } from '@mui/icons-material';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
+import { getSession, signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { ErrorOutline } from '@mui/icons-material';
+import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { useAuthContext } from '../../../hooks';
+import { validations } from '../../../utils';
+import { AuthLayout } from '../../../components/layouts';
 type FormData = {
 	name: string;
 	email: string;
@@ -34,8 +35,9 @@ const RegisterPage = () => {
 			return;
 		}
 		//? Navegar a la pantalla donde el usuario estaba.
-		const destination = router.query.p?.toString() || '/';
-		router.replace(destination);
+		// const destination = router.query.p?.toString() || '/';
+		// router.replace(destination);
+		await signIn('credentials', { email, password });
 	};
 	return (
 		<AuthLayout title='Registrar'>
@@ -102,7 +104,10 @@ const RegisterPage = () => {
 							</Button>
 						</Grid>
 						<Grid item xs={12} display='flex' justifyContent='end'>
-							<NextLink href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'} passHref legacyBehavior>
+							<NextLink
+								href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
+								passHref
+								legacyBehavior>
 								<Link underline='always'>Ya tienes una cuenta ?</Link>
 							</NextLink>
 						</Grid>
@@ -111,5 +116,21 @@ const RegisterPage = () => {
 			</form>
 		</AuthLayout>
 	);
+};
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+	const session = await getSession({ req });
+	const { p = '/' } = query;
+	if (session) {
+		return {
+			redirect: {
+				destination: p.toString(),
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
 };
 export default RegisterPage;
