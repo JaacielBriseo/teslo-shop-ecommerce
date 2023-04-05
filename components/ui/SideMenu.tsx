@@ -76,7 +76,7 @@ export const SideMenu = () => {
 						<ListItemText primary={'Perfil'} />
 					</ListItemButton>
 
-					<ListItemButton sx={{ display: user ? 'flex' : 'none' }}>
+					<ListItemButton sx={{ display: user ? 'flex' : 'none' }} onClick={() => navigateTo('/orders/history')}>
 						<ListItemIcon>
 							<ConfirmationNumberOutlined />
 						</ListItemIcon>
@@ -104,7 +104,9 @@ export const SideMenu = () => {
 						<ListItemText primary={'Niños'} />
 					</ListItemButton>
 
-					<ListItemButton sx={{ display: user ? 'none' : 'flex' }} onClick={()=>navigateTo(`/auth/login?p=${router.asPath}`)}>
+					<ListItemButton
+						sx={{ display: user ? 'none' : 'flex' }}
+						onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}>
 						<ListItemIcon>
 							<VpnKeyOutlined />
 						</ListItemIcon>
