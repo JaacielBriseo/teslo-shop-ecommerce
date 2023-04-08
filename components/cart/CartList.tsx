@@ -5,7 +5,7 @@ import { ItemCounter } from '../ui';
 import { ICartProduct, IOrderItem } from '../../interfaces';
 interface Props {
 	editable?: boolean;
-	products: IOrderItem[];
+	products?: IOrderItem[];
 }
 export const CartList: React.FC<Props> = ({ editable = false, products }) => {
 	const { cart, updateCartQuantity, removeCartProduct } = useCartContext();
