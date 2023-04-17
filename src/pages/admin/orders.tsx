@@ -39,10 +39,11 @@ const OrdersPage = () => {
 	if (!data && !error) {
 		return <></>;
 	}
+	console.log({data});
 	const rows = data!.map(order => ({
 		id: order._id,
-		email: (order.user as IUser).email,
-		name: (order.user as IUser).name,
+		email: (order.user as IUser)?.email,
+		name: (order.user as IUser)?.name,
 		total: order.total,
 		isPaid: order.isPaid,
 		numberOfProductss: order.numberOfItems,

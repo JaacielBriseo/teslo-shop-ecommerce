@@ -42,6 +42,7 @@ export const authOptions: NextAuthOptions = {
 		strategy: 'jwt',
 		updateAge: 86400, //cada dia
 	},
+	secret: process.env.SECRET,
 
 	//Callbacks
 	callbacks: {
