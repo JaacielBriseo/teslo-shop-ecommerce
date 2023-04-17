@@ -48,13 +48,13 @@ const RegisterPage = () => {
 							<Typography variant='h1' component='h1'>
 								Crear cuenta
 							</Typography>
-							<Chip
+							{/* <Chip
 								label='Error registrando usuario'
 								color='error'
 								icon={<ErrorOutline />}
 								className='fadeIn'
 								sx={{ display: showError ? 'flex' : 'none' }}
-							/>
+							/> */}
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
