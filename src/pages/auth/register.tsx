@@ -2,13 +2,15 @@ import { useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { getSession, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { ErrorOutline } from '@mui/icons-material';
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { useAuthContext } from '../../../hooks';
 import { validations } from '../../../utils';
 import { AuthLayout } from '../../../components/layouts';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
 type FormData = {
 	name: string;
 	email: string;
@@ -48,13 +50,13 @@ const RegisterPage = () => {
 							<Typography variant='h1' component='h1'>
 								Crear cuenta
 							</Typography>
-							{/* <Chip
+							<Chip
 								label='Error registrando usuario'
 								color='error'
 								icon={<ErrorOutline />}
 								className='fadeIn'
 								sx={{ display: showError ? 'flex' : 'none' }}
-							/> */}
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
@@ -117,8 +119,8 @@ const RegisterPage = () => {
 		</AuthLayout>
 	);
 };
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-	const session = await getSession({ req });
+export const getServerSideProps: GetServerSideProps = async ({ req, query, res }) => {
+	const session = await getServerSession(req, res, authOptions);
 	const { p = '/' } = query;
 	if (session) {
 		return {
